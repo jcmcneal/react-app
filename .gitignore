@@ -1,0 +1,10 @@
+assets/
+.cache/
+node_modules/
+.DS_Store
+.cache/
+.vscode/
+package-lock.json
+yarn-error.log
+dist/
+*.tgz
