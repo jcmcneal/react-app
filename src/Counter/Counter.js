@@ -1,34 +1,20 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { connect } from '@relax-js/react-relax';
 
-import { increment } from './actions';
+import { increment, decrement } from './actions';
 import { getCount } from './selectors';
+import { getContext } from '../state';
 
-const Counter = (props) => {
+const Counter = () => {
+    const { state, setState } = getContext();
+    const count = getCount(state);
+
     return (
         <div>
-            Count: {props.count}
-            <button onClick={props.increment}>+</button>
+            Count: {count}
+            <button onClick={() => setState(increment)}>+</button>
+            <button onClick={() => setState(decrement)}>-</button>
         </div>
     );
 };
 
-Counter.propTypes = {
-    count: PropTypes.number,
-    increment: PropTypes.func.isRequired,
-};
-
-Counter.defaultProps = {
-    count: 0,
-};
-
-const mapStateToProps = state => ({
-    count: getCount(state),
-});
-
-const mapDispatchToProps = {
-    increment,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Counter);
+export default Counter;

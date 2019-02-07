@@ -51,8 +51,8 @@
         "@relax-js/relax": "^0.0.21",
         "bootstrap": "^4.2.1",
         "dotenv": "^6.2.0",
-        "react": "^16.7.0",
-        "react-dom": "^16.7.0",
+        "react": "^16.8.1",
+        "react-dom": "^16.8.1",
         "reselect": "^4.0.0"
     }
 }
