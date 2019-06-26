@@ -18,7 +18,12 @@ const config = {
     },
     output: {
         path: path.resolve('dist'),
-        filename: '[name].min.js',
+        filename: 'static/[name].min.js',
+    },
+    resolve: {
+        alias: {
+            Assets: path.resolve(__dirname, './assets'),
+        },
     },
     module: {
         rules: [
@@ -42,10 +47,18 @@ const config = {
                     'less-loader',
                 ],
             },
+            {
+                test: /\.(png|jpe?g|gif)$/,
+                use: [
+                    {
+                        loader: 'file-loader',
+                        options: {
+                            name: '[path][name]-[hash].[ext]',
+                        },
+                    },
+                ],
+            },
         ],
-    },
-    node: {
-        Buffer: false,
     },
     plugins: [
         new webpack.DefinePlugin(Object.entries(env.parsed).reduce((prev, [key, value]) => ({
@@ -54,12 +67,12 @@ const config = {
         }), {})),
         new HtmlWebpackPlugin({
             hash: true,
-            title: 'Custom template',
+            title: app.description,
             template: 'src/index.html',
             minify: isProd,
         }),
         new MiniCssExtractPlugin({
-            filename: '[name].min.css',
+            filename: 'static/[name].min.css',
         }),
         new UglifyJsPlugin({
             uglifyOptions: {
