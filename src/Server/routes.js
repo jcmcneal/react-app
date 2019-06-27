@@ -3,10 +3,10 @@ import path from 'path';
 
 import middleware from './middleware';
 import api from './api';
+import './ssr';
+import { paths } from './helpers/paths';
 
 const app = Express();
-const rootDir = path.resolve();
-const publicPath = path.join(rootDir, 'dist');
 
 // Middleware
 app.use(middleware);
@@ -15,10 +15,10 @@ app.use(middleware);
 app.use('/api', api);
 
 // Static Files
-app.use(Express.static(publicPath));
+app.use(Express.static(paths.publicPath));
 
 app.get('/', (req, res) => {
-    res.sendFile(path.join(publicPath, 'index.html'));
+    res.sendFile(path.join(paths.publicPath, 'index.html'));
 });
 
 export default app;

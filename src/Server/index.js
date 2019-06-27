@@ -1,7 +1,8 @@
 import Express from 'express';
-import { getConfig } from '../helpers';
 
 import routes from './routes';
+
+import { getConfig } from './helpers/config';
 
 const app = Express();
 const PORT = getConfig('PORT');
