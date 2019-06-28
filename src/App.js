@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { hydrate } from 'react-dom';
 
 import './App.less';
 
@@ -11,8 +11,11 @@ const App = () => (
 
 /** HMR */
 if (process.env.NODE_ENV === 'development') {
-    const { hot } = require('react-hot-loader'); // eslint-disable-line
-    hot(module)(App);
+    require('react-hot-loader').hot(module)(App); // eslint-disable-line
 }
 
-ReactDOM.render(<App />, document.getElementById('app'));
+if (process.env.CLIENT_SIDE) {
+    hydrate(<App />, document.getElementById('app'));
+}
+
+export default App;

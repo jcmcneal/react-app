@@ -1,19 +1,21 @@
-import fs from 'fs';
 import path from 'path';
+import Express from 'express';
 
-import app from '../../../package.json';
+import React from 'react';
+import ReactDOMServer from 'react-dom/server';
+
 import { paths } from '../helpers/paths';
+import { readFile } from '../helpers/readFile';
+import App from '../../App';
 
-const readStaticFile = (file) => {
-    if (!fs.existsSync(file)) return undefined;
+const ssr = Express();
 
-    return fs.readFileSync(file, 'utf8');
-};
+const template = readFile(path.join(paths.publicPath, 'index.html'));
 
-const staticName = `${app.name}.${app.version}.min`;
+ssr.get('/', (req, res) => {
+    res.send(
+        template.replace('SSR_JS', ReactDOMServer.renderToString(<App />)),
+    );
+});
 
-const staticHtml = readStaticFile(path.join(paths.publicPath, 'index.html'));
-const staticJs = readStaticFile(path.join(paths.staticPath, `${staticName}.js`));
-const staticCss = readStaticFile(path.join(paths.staticPath, `${staticName}.css`));
-
-console.log(staticHtml);
+export default ssr;

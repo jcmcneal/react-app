@@ -10,6 +10,12 @@ const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const env = require('dotenv').config();
 const app = require('./package.json');
 
+const mergedEnv = {
+    ...env.parsed,
+    CLIENT_SIDE: true,
+    SERVER_SIDE: false,
+};
+
 const isProd = process.env.NODE_ENV === 'production';
 
 const config = {
@@ -42,7 +48,7 @@ const config = {
             {
                 test: /(\.less)$/,
                 use: [
-                    isProd ? MiniCssExtractPlugin.loader : 'style-loader',
+                    isProd ? MiniCssExtractPlugin.loader : 'isomorphic-style-loader',
                     'css-loader?sourceMap&modules&importLoaders=1&localIdentName=[local]_[hash:base64:5]',
                     'less-loader',
                 ],
@@ -61,7 +67,7 @@ const config = {
         ],
     },
     plugins: [
-        new webpack.DefinePlugin(Object.entries(env.parsed).reduce((prev, [key, value]) => ({
+        new webpack.DefinePlugin(Object.entries(mergedEnv).reduce((prev, [key, value]) => ({
             ...prev,
             [`process.env.${key}`]: JSON.stringify(value),
         }), {})),

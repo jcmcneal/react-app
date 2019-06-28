@@ -1,10 +1,10 @@
 import Express from 'express';
-import path from 'path';
+
+import { paths } from './helpers/paths';
 
 import middleware from './middleware';
 import api from './api';
-import './ssr';
-import { paths } from './helpers/paths';
+import ssr from './ssr';
 
 const app = Express();
 
@@ -14,11 +14,10 @@ app.use(middleware);
 // API
 app.use('/api', api);
 
+// Server Side Rendering
+app.use(ssr);
+
 // Static Files
 app.use(Express.static(paths.publicPath));
-
-app.get('/', (req, res) => {
-    res.sendFile(path.join(paths.publicPath, 'index.html'));
-});
 
 export default app;
