@@ -7,16 +7,13 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const args = require('minimist')(process.argv.slice(2));
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
-const env = require('dotenv').config();
+const env = require('dotenv').config({
+    path: path.resolve(`./env/.env.${process.env.ENV}`),
+}).parsed;
 const app = require('./package.json');
 
-const mergedEnv = {
-    ...env.parsed,
-    CLIENT_SIDE: true,
-    SERVER_SIDE: false,
-};
-
-const isProd = process.env.NODE_ENV === 'production';
+console.log(env);
+const isProd = env.NODE_ENV === 'production';
 
 const config = {
     entry: {
@@ -48,7 +45,7 @@ const config = {
             {
                 test: /(\.less)$/,
                 use: [
-                    isProd ? MiniCssExtractPlugin.loader : 'isomorphic-style-loader',
+                    (isProd && env.CLIENT_SIDE) ? MiniCssExtractPlugin.loader : 'isomorphic-style-loader',
                     'css-loader?sourceMap&modules&importLoaders=1&localIdentName=[local]_[hash:base64:5]',
                     'less-loader',
                 ],
@@ -66,8 +63,19 @@ const config = {
             },
         ],
     },
+    optimization: {
+        splitChunks: {
+            cacheGroups: {
+                commons: {
+                    test: /[\\/]node_modules[\\/]/,
+                    name: 'modules',
+                    chunks: 'initial',
+                },
+            },
+        },
+    },
     plugins: [
-        new webpack.DefinePlugin(Object.entries(mergedEnv).reduce((prev, [key, value]) => ({
+        new webpack.DefinePlugin(Object.entries(env).reduce((prev, [key, value]) => ({
             ...prev,
             [`process.env.${key}`]: JSON.stringify(value),
         }), {})),

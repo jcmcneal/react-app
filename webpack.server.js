@@ -3,13 +3,10 @@
  */
 const Webpack = require('webpack');
 const nodeExternals = require('webpack-node-externals');
-const env = require('dotenv').config();
-
-const mergedEnv = {
-    ...env.parsed,
-    CLIENT_SIDE: false,
-    SERVER_SIDE: true,
-};
+const path = require('path');
+const env = require('dotenv').config({
+    path: path.resolve(`./env/.env.${process.env.ENV}`),
+}).parsed;
 
 const config = require('./webpack.config');
 
@@ -20,7 +17,7 @@ config.entry = {
 config.target = 'node';
 config.externals = [nodeExternals()];
 config.plugins = [
-    new Webpack.DefinePlugin(Object.entries(mergedEnv).reduce((prev, [key, value]) => ({
+    new Webpack.DefinePlugin(Object.entries(env).reduce((prev, [key, value]) => ({
         ...prev,
         [`process.env.${key}`]: JSON.stringify(value),
     }), {})),

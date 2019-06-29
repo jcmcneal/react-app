@@ -5,10 +5,11 @@
     "description": "React UI & Node API",
     "scripts": {
         "start": "node dist/static/server.min.js",
-        "dev": "webpack-dev-server --open --mode='development' --hotOnly --config webpack.dev.client.js",
+        "dev": "export ENV=client.dev; webpack-dev-server --open --mode='development' --hotOnly --config webpack.dev.client.js",
         "dev:server": "nodemon --watch src/Server --exec 'yarn build:server && yarn start'",
-        "build": "export NODE_ENV=production; webpack --progress --optimize-minimize --mode=production",
-        "build:server": "webpack --progress --optimize-minimize --mode=production --config webpack.server.js",
+        "build": "yarn build:client && yarn build:server",
+        "build:client": "export ENV=client.prod; webpack --progress --optimize-minimize --mode=production",
+        "build:server": "export ENV=server.prod; webpack --progress --optimize-minimize --mode=production --config webpack.server.js",
         "test": "jest --watch --config=jest.config.json",
         "lint": "eslint src/"
     },
